@@ -29,8 +29,6 @@ function read_mongo_version() {
   local mongo_version=$(read_configuration "MONGO_VERSION")
   if [ -z "${mongo_version}" ]; then
     if [[ "$mongo_image" =~ ^mongo:([0-9]+)\.(.*)$ ]]; then
-      # when running a chain of commands (example: bin/up -> bin/docker-compose) we're passing
-      # SKIP_WARNINGS=true to prevent the warning message to be printed several times
       if [[ ${SKIP_WARNINGS:-null} != "true" ]]; then
         echo "-------------------  WARNING  ----------------------"
         echo "  Deprecation warning: the mongo image is now split between MONGO_IMAGE"
@@ -217,11 +215,11 @@ function check_sharelatex_env_vars() {
 function read_variable() {
   local name=$1
   grep -E "^$name=" "$TOOLKIT_ROOT/config/variables.env" \
-  | sed -r "s/^$name=([\"']?)(.+)\1\$/\2/"
+  | sed -r "s/^$name=['\"]?(.*)['\"]?$/\1/"
 }
 
 function read_configuration() {
   local name=$1
   grep -E "^$name=" "$TOOLKIT_ROOT/config/overleaf.rc" \
-  | sed -r "s/^$name=([\"']?)(.+)\1\$/\2/"
+  | sed -r "s/^$name=['\"]?(.*)['\"]?$/\1/"
 }
